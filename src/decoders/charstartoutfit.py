@@ -20,6 +20,8 @@ from .charbaseinfo import _cname, _is_standard, _rname
 
 _SEX = {0: "♂", 1: "♀", 2: "both"}
 _EMPTY = (0, 0xFFFFFFFF)
+# plain link to Wowhead's WotLK item page; no request, the ID just goes in.
+_ITEM_URL = "https://www.wowhead.com/wotlk/item={0}"
 
 
 class CharStartOutfitDecoder:
@@ -47,17 +49,19 @@ class CharStartOutfitDecoder:
             rows.append((race, cls, gender, items))
 
         lines = [
-            f"**`{filename}` — {rec_count} outfits, "
+            f"**`{filename}`: {rec_count} outfits, "
             f"{len(rows)} for non-standard combos**\n"
         ]
         if rows:
-            lines.append("| Combo | Sex | Starting item IDs |")
-            lines.append("|-------|:---:|-------------------|")
+            lines.append("| Combo | Sex | Starting items |")
+            lines.append("|-------|:---:|----------------|")
             for race, cls, gender, items in rows:
-                ids = ", ".join(str(i) for i in items) or "_none_"
+                cell = ", ".join(
+                    f"[{i}]({_ITEM_URL.format(i)})" for i in items
+                ) or "_none_"
                 lines.append(
                     f"| **{_rname(race)} {_cname(cls)}** | "
-                    f"{_SEX.get(gender, gender)} | {ids} |"
+                    f"{_SEX.get(gender, gender)} | {cell} |"
                 )
         else:
             lines.append("_No outfits for non-standard combos._")

@@ -40,7 +40,7 @@ class GenericDbcDecoder:
         except ValueError:
             return None
         return (
-            f"**`{filename}`** — WDBC: "
+            f"**`{filename}`**: WDBC: "
             f"{dbc.record_count:,} records · {dbc.field_count} fields · "
             f"{dbc.record_size} B/record · {dbc.string_size:,} B strings\n"
         )

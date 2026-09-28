@@ -66,9 +66,10 @@ def test_charstartoutfit_lists_only_nonstandard():
     ]
     out = CharStartOutfitDecoder().render("CharStartOutfit.dbc", _make_charstartoutfit(entries))
     assert "Undead Paladin" in out
-    assert "45, 43, 6948" in out
-    assert "148, 117" in out and "148, 117, 0" not in out  # 0 dropped
-    assert "Human Warrior" not in out                       # standard -> skipped
+    # each item id becomes a plain Wowhead link, no network request
+    assert "[6948](https://www.wowhead.com/wotlk/item=6948)" in out
+    assert "[0]" not in out                             # 0 slot dropped
+    assert "Human Warrior" not in out                   # standard -> skipped
     assert "2 for non-standard combos" in out
 
 

@@ -28,13 +28,13 @@ def inspect(path: str) -> str:
         archive = open_archive(path)
     except Exception as e:  # noqa: BLE001
         out.append(f"> ⚠️ Could not open with the MPQ loader: `{e}`\n"
-                   f"> May use a compression the loader doesn't support — "
+                   f"> May use a compression the loader doesn't support: "
                    f"try the StormLib backend.\n")
         return "\n".join(out)
 
     files = archive.files()
     if not files:
-        out.append("> _(no listed files — archive has no `(listfile)`)_\n")
+        out.append("> _(no listed files: archive has no `(listfile)`)_\n")
         return "\n".join(out)
 
     # cache contents once (also used by decoders)
