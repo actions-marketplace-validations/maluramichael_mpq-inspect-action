@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A reusable GitHub Action that **opens the MPQ files changed in a pull request,
-decodes what's inside, and posts a Markdown summary as a sticky PR comment** — so
+decodes what's inside, and posts a Markdown summary as a sticky PR comment**, so
 you can review a WoW client patch without downloading and unpacking it by hand.
 
 Built for [AzerothCore](https://www.azerothcore.org/) / 3.3.5a client patches
@@ -13,13 +13,19 @@ Built for [AzerothCore](https://www.azerothcore.org/) / 3.3.5a client patches
 
 ## What it reports
 
-- **File manifest** — every file inside each changed `.MPQ` and its size.
-- **`CharBaseInfo.dbc`** — decoded race/class combos, **diffed against the
+- **File manifest**: every file inside each changed `.MPQ` and its size.
+- **`CharBaseInfo.dbc`**: decoded race/class combos, **diffed against the
   standard WotLK matrix**, so newly enabled combos (e.g. *Gnome Priest*,
   *Human Hunter*) are highlighted.
-- **Any other `.dbc`** — WDBC header stats (records / fields / record size).
-- **Text files** (`.lua`, `.xml`, `.toc`, `.txt`, …) — a short preview.
+- **`CharStartOutfit.dbc`**: starting gear (item IDs) per race/class/gender,
+  listed for the non-standard combos only.
+- **Any other `.dbc`**: WDBC header stats (records / fields / record size).
+- **Text files** (`.lua`, `.xml`, `.toc`, `.txt`, …): a short preview.
 - Unknown binaries just appear in the manifest.
+
+Encrypted archives are handled too: the reader decrypts MPQ file/listfile
+encryption (`MPQ_FILE_ENCRYPTED` / `MPQ_FILE_FIX_KEY`), which real client
+patches use for their `(listfile)`.
 
 ## Usage
 
@@ -47,7 +53,7 @@ jobs:
           pr-number: ${{ github.event.pull_request.number || github.event.inputs.pr }}
 ```
 
-No `actions/checkout` step is needed — the action fetches only the changed MPQ
+No `actions/checkout` step is needed: the action fetches only the changed MPQ
 blobs through the GitHub API.
 
 Pin to `@main` for always-latest (no tag bumping), or to a release tag if you
@@ -73,12 +79,12 @@ A `pull_request` `paths` filter matches the **whole PR diff**, so once a PR
 contains an `.MPQ`, every later push (even an SQL-only fix) would re-trigger the
 workflow. With `changed-only: true` (default) the action compares just this
 push's range (`before..after`) and, if that push touched no MPQ, **posts
-nothing** — the existing comment is left as-is. The first `opened` event and
+nothing**: the existing comment is left as-is. The first `opened` event and
 manual `workflow_dispatch` runs always inspect the full PR.
 
 ### Output
 
-- `report` — the generated Markdown (use it in later steps if you don't want the
+- `report`: the generated Markdown (use it in later steps if you don't want the
   built-in comment).
 
 ## Why `pull_request_target`?
@@ -100,10 +106,11 @@ Decoders are pluggable. To support another file that shows up inside MPQs:
    first).
 
 `src/mpq_reader.py` isolates the MPQ loader ([mpyq](https://github.com/eagleflo/mpyq),
-MIT). If a patch ever uses a compression mpyq can't read, swap that one file for a
-[StormLib](https://github.com/ladislav-zezula/StormLib)-backed reader (`apt install smpq`)
-— nothing else changes.
+MIT) plus our own encryption-aware `read_file`. If a patch ever uses a
+compression the reader can't handle, swap that one file for a
+[StormLib](https://github.com/ladislav-zezula/StormLib)-backed reader (`apt install smpq`):
+nothing else changes.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).

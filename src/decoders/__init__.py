@@ -10,14 +10,16 @@ returns True and whose render() returns a non-None string wins. Anything left
 over falls back to the generic file manifest in inspect.py.
 """
 from .charbaseinfo import CharBaseInfoDecoder
+from .charstartoutfit import CharStartOutfitDecoder
 from .dbc import GenericDbcDecoder
 from .text import TextDecoder
 
 # Order matters: most specific first.
 DECODERS = [
-    CharBaseInfoDecoder(),   # CharBaseInfo.dbc -> race/class combo diff
-    GenericDbcDecoder(),     # any other *.dbc -> header stats
-    TextDecoder(),           # *.lua/*.xml/*.txt/*.toc -> text preview
+    CharBaseInfoDecoder(),      # CharBaseInfo.dbc -> race/class combo diff
+    CharStartOutfitDecoder(),   # CharStartOutfit.dbc -> starting gear per combo
+    GenericDbcDecoder(),        # any other *.dbc -> header stats
+    TextDecoder(),              # *.lua/*.xml/*.txt/*.toc -> text preview
 ]
 
 
