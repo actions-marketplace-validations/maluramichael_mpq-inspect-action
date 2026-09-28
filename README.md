@@ -1,5 +1,10 @@
 # mpq-inspect-action
 
+<!-- links:start -->
+[![Support me on Ko-fi](https://malura.de/assets/badge/kofi.svg)](https://malura.de/go/kofi?ref=mpq-inspect-action)
+[![Check out my page](https://malura.de/assets/badge/malura.svg)](https://malura.de/go/site?ref=mpq-inspect-action)
+<!-- links:end -->
+
 [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-MPQ%20Inspect-2ea44f?logo=github)](https://github.com/marketplace/actions/mpq-inspect)
 [![Release](https://img.shields.io/github/v/release/maluramichael/mpq-inspect-action?sort=semver)](https://github.com/maluramichael/mpq-inspect-action/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
