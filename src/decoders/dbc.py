@@ -27,6 +27,14 @@ class DbcFile:
         n = len(row) // 4
         return struct.unpack_from(f"<{n}I", row, 0)
 
+    def cstring(self, offset: int) -> str:
+        """Read a NUL-terminated string from the string block at `offset`."""
+        if offset <= 0 or offset >= len(self.string_block):
+            return ""
+        end = self.string_block.find(b"\x00", offset)
+        end = len(self.string_block) if end < 0 else end
+        return self.string_block[offset:end].decode("utf-8", "replace")
+
 
 class GenericDbcDecoder:
     """Fallback for any *.dbc we have no specific decoder for: report shape."""

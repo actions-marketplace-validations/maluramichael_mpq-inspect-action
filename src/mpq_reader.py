@@ -15,6 +15,19 @@ import zlib
 from io import BytesIO
 from typing import List, Optional
 
+# DBCs that turn up in WoW client patches, probed by name when an archive
+# ships without a (listfile). Covers the ones our decoders understand plus the
+# common custom-race/class/item tables. The client stores paths with backslashes.
+_KNOWN_NAMES = [
+    "DBFilesClient\\" + n for n in (
+        "CharBaseInfo.dbc", "CharStartOutfit.dbc", "SkillRaceClassInfo.dbc",
+        "ChrClasses.dbc", "ChrRaces.dbc", "CharTitles.dbc", "CharSections.dbc",
+        "AreaTable.dbc", "SkillLine.dbc", "SkillLineAbility.dbc", "Spell.dbc",
+        "Item.dbc", "ItemDisplayInfo.dbc", "Talent.dbc", "TalentTab.dbc",
+        "CreatureDisplayInfo.dbc", "CreatureModelData.dbc",
+    )
+]
+
 MPQ_FILE_COMPRESS = 0x00000200
 MPQ_FILE_ENCRYPTED = 0x00010000
 MPQ_FILE_FIX_KEY = 0x00020000
@@ -110,17 +123,21 @@ class Archive:
 
     # --- public interface -------------------------------------------------
     def files(self) -> List[str]:
-        block = self._mpq.block_table[self._entry("(listfile)").block_table_index] \
-            if self._entry("(listfile)") else None
-        if block is None:
-            return []
-        blob = self._read_block("(listfile)", block) or b""
-        names = []
-        for line in blob.decode("latin-1").replace("\r\n", "\n").split("\n"):
-            name = line.strip()
-            if name and not name.startswith("("):
-                names.append(name)
-        return sorted(names)
+        entry = self._entry("(listfile)")
+        if entry is not None:
+            blob = self._read_block(
+                "(listfile)", self._mpq.block_table[entry.block_table_index]
+            ) or b""
+            names = []
+            for line in blob.decode("latin-1").replace("\r\n", "\n").split("\n"):
+                name = line.strip()
+                if name and not name.startswith("("):
+                    names.append(name)
+            if names:
+                return sorted(names)
+        # No (listfile): probe known client-patch DBC names by hash. WoW client
+        # patches often ship without one, so this keeps them inspectable.
+        return sorted(n for n in _KNOWN_NAMES if self._entry(n) is not None)
 
     def read(self, name: str) -> bytes:
         entry = self._entry(name)

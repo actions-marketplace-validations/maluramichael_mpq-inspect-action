@@ -17,15 +17,24 @@ Built for [AzerothCore](https://www.azerothcore.org/) / 3.3.5a client patches
 - **`CharBaseInfo.dbc`**: decoded race/class combos, **diffed against the
   standard WotLK matrix**, so newly enabled combos (e.g. *Gnome Priest*,
   *Human Hunter*) are highlighted.
-- **`CharStartOutfit.dbc`**: starting gear (item IDs) per race/class/gender,
-  listed for the non-standard combos only.
+- **`CharStartOutfit.dbc`**: starting gear per race/class/gender for the
+  non-standard combos, each item ID linked to Wowhead.
+- **`SkillRaceClassInfo.dbc`**: race-restricted weapon/armor proficiency grants
+  (which class gets which skill for which races), the table behind the
+  "Undead Paladin can't use swords" class of bug.
+- **`ChrClasses.dbc` / `ChrRaces.dbc`**: class/race IDs and names, so a custom
+  class or race a mod adds shows up as a new row.
+- **`CharTitles.dbc`**: player title IDs and text.
 - **Any other `.dbc`**: WDBC header stats (records / fields / record size).
 - **Text files** (`.lua`, `.xml`, `.toc`, `.txt`, …): a short preview.
 - Unknown binaries just appear in the manifest.
 
+Long tables are collapsed behind a summary so the comment stays scannable, and
+the report is capped just under GitHub's 65536-char comment limit.
+
 Encrypted archives are handled too: the reader decrypts MPQ file/listfile
-encryption (`MPQ_FILE_ENCRYPTED` / `MPQ_FILE_FIX_KEY`), which real client
-patches use for their `(listfile)`.
+encryption (`MPQ_FILE_ENCRYPTED` / `MPQ_FILE_FIX_KEY`), and an archive shipped
+without a `(listfile)` is still read by probing known `DBFilesClient` DBC names.
 
 ## Usage
 
