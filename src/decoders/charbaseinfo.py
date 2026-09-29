@@ -63,7 +63,7 @@ class CharBaseInfoDecoder:
         combos = sorted(combos)
         new = [(r, c) for (r, c) in combos if not _is_standard(r, c)]
         lines = [
-            f"**`{filename}` — {len(combos)} race/class combos, "
+            f"**`{filename}`: {len(combos)} race/class combos, "
             f"{len(new)} non-standard**\n"
         ]
         if new:
@@ -72,6 +72,6 @@ class CharBaseInfoDecoder:
             for r, c in new:
                 lines.append(f"| **{_rname(r)} {_cname(c)}** | {r} | {c} |")
         else:
-            lines.append("_All combos are standard WotLK — nothing added._")
+            lines.append("_All combos are standard WotLK, nothing added._")
         lines.append("")
         return "\n".join(lines)

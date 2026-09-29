@@ -25,5 +25,5 @@ class TextDecoder:
             clipped = True
         body = "\n".join(lines)
         note = "\n… _(truncated)_" if clipped else ""
-        return (f"**`{filename}`** — {len(data):,} B\n\n"
+        return (f"**`{filename}`**: {len(data):,} B\n\n"
                 f"```\n{body}\n```{note}\n")
